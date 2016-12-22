@@ -1,0 +1,28 @@
+etreedb:
+    image: nginx:latest
+    ports: 
+        - "80:80"
+    links:
+        - php
+    volumes:
+        - ../api.etreedb.org:/var/www/html/api.etreedb.org
+        - ../utf8convert.etreedb.org:/var/www/html/utf8convert.etreedb.org
+        - ./config/default.conf:/etc/nginx/conf.d/default.conf
+php:
+    build: .
+    dockerfile: build/php-fpm
+    links:
+        - mysql
+    ports:
+        - "9000:9000"
+    volumes:
+        - ../api.etreedb.org:/var/www/html/api.etreedb.org
+        - ../utf8convert.etreedb.org:/var/www/html/utf8convert.etreedb.org
+mysql:
+    image: mysql:latest
+    environment:
+        - MYSQL_ROOT_PASSWORD=123
+    ports:
+        - "3306:3306"
+    volumes:
+        - ./data/mysql:/var/lib/mysql
